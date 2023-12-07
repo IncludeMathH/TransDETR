@@ -19,7 +19,7 @@ PRETRAIN=exps/e2e_TransVTS_r50_COCOTextV2_SynthText/pretrain_COCOText_checkpoint
 
 EXP_DIR=exps/e2e_TransVTS_r50_ICDAR15
 
-CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m torch.distributed.launch --nproc_per_node=4 \
+CUDA_VISIBLE_DEVICES=1,2,3 python3 -m torch.distributed.launch --nproc_per_node=3 \
     --use_env main.py \
     --meta_arch TransDETR_ignored \
     --dataset_file VideoText \

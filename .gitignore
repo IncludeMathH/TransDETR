@@ -1,0 +1,9 @@
+exps/      # 一切权重文件
+*.pth
+**__pycache__**
+**build**
+Data/*
+*.so
+*.egg-info
+*.egg
+exps/model_weights
