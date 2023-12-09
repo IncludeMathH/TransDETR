@@ -5,7 +5,7 @@
 # Copyright (c) 2020 SenseTime. All Rights Reserved.
 # ------------------------------------------------------------------------
 
-EXP_DIR=exps/model_weights
+EXP_DIR=exps/model_weights/eval_IC15
 # EXP_DIR=exps/e2e_TransVTS_r50_SynthText
 # EXP_DIR=exps/e2e_TransVTS_r50_COCOTextV2
 python3 eval.py \

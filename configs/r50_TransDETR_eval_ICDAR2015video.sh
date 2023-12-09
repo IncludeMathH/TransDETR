@@ -5,7 +5,7 @@
 # Copyright (c) 2020 SenseTime. All Rights Reserved.
 # ------------------------------------------------------------------------
 
-EXP_DIR=exps/e2e_TransVTS_r50_ICDAR15
+EXP_DIR=exps/model_weights/eval_IC15_video
 # EXP_DIR=exps/e2e_TransVTS_r50_VideoSynthText
 # EXP_DIR=exps/e2e_TransVTS_r50_FlowImage
 # EXP_DIR=exps/e2e_TransVTS_r50_UnrealText
@@ -15,7 +15,7 @@ EXP_DIR=exps/e2e_TransVTS_r50_ICDAR15
 # EXP_DIR=exps/e2e_TransVTS_r50_VISD
 # EXP_DIR=exps/e2e_TransVTS_r50_COCOTextV2   parallel_eval_icdar15.py
 
-CUDA_VISIBLE_DEVICES=0 python3 parallel_eval_icdar15.py \
+CUDA_VISIBLE_DEVICES=0,1,2,3 python3 parallel_eval_icdar15.py \
     --thread_num 1\
     --meta_arch TransDETR_ignored \
     --dataset_file Text \
@@ -24,7 +24,7 @@ CUDA_VISIBLE_DEVICES=0 python3 parallel_eval_icdar15.py \
     --lr_drop 100 \
     --lr 2e-4 \
     --lr_backbone 2e-5 \
-    --pretrained ${EXP_DIR}/motr_final.pth \
+    --pretrained ${EXP_DIR}/TextSpottingMOTA60.9IDF172.8.pth \
     --output_dir ${EXP_DIR} \
     --batch_size 1 \
     --sample_mode 'random_interval' \
@@ -38,7 +38,7 @@ CUDA_VISIBLE_DEVICES=0 python3 parallel_eval_icdar15.py \
     --fp_ratio 0.3 \
     --query_interaction_layer 'QIM' \
     --extra_track_attn \
-    --mot_path /mmu-ocr/weijiawu/Data/VideoText/MOTR\
+    --mot_path Data/ \
     --data_txt_path_train ./datasets/data_path/ICDAR15.train \
     --data_txt_path_val ./datasets/data_path/ICDAR15.train \
     --resume ${EXP_DIR}/TextSpottingMOTA60.9IDF172.8.pth

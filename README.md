@@ -92,6 +92,11 @@ pip install moviepy
 mkdir Data
 cd Data
 ln -s /nfs/upload/TextSpottingDatasets/ICDAR2015 ICDAR2015
+cd -
+# prepare data by usning soft chain
+cd exps
+ln -s /data6/upload/TransDETR/model_weights model_weights
+cd -
 ```
 The following are the installation commands provided by the original author.
 
