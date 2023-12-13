@@ -4,6 +4,7 @@ aniso8601==9.0.1
 ansi2html==1.8.0
 antlr4-python3-runtime==4.9.3
 anyio
+argparse==1.4.0
 arrow==1.2.3
 black==22.3.0
 cachetools==5.3.1

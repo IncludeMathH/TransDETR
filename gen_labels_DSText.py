@@ -189,7 +189,7 @@ def getBboxesAndLabels_icd13(height, width, annotations):
 
     return bboxes_box, IDs, rotates, words,bboxes
 
-def parse_xml(annotation_path,image_path):
+def parse_xml(annotation_path, image_path):
     
     try:
         utf8_parser = ET.XMLParser(encoding='gbk')
@@ -207,7 +207,7 @@ def parse_xml(annotation_path,image_path):
     height, width = img.shape[:2]
 
             
-    for idx,child in enumerate(root):
+    for idx, child in enumerate(root):
         bboxes, IDs, rotates, words, orignial_bboxes = \
             getBboxesAndLabels_icd13(height, width, child)
         bboxess.append(bboxes) 
@@ -245,39 +245,39 @@ def gen_data_path(path,split_train_test="train",data_path_str = "./datasets/data
 
 if __name__=="__main__":
     # path of ground truth of ICDAR2015 video
-    from_label_root = "./DSText"
+    from_label_root = "Data/DSText/train_anno"
 
     # path of video frames 
-    seq_root = './Data/DSText/images/train/'
+    seq_root = './Data/DSText/images/'
 
     # path to generate the annotation
-    label_root = './dataset/DSText/labels_with_ids/train'
+    label_root = './Data/DSText/labels_with_ids'
 
     mkdirs(label_root)
 
     seqs = []
-    for cls in os.listdir(seq_root):                # cls = 'video_xxx_x_x'
+    for cls in os.listdir(seq_root):                # cls = 'train' 'test'
         seq_root_cls = os.path.join(seq_root, cls)
         for s in os.listdir(seq_root_cls):
-            seqs.append(os.path.join(cls, s))        # seq = 'video_xxx_x_x/x.jpg'
+            seqs.append(os.path.join(cls, s))        # seq = 'train/video_xxx_x_x'
             
 
     tid_curr = 0
     tid_last = -1
     for seq in tqdm(seqs):
-        image_path_frame = osp.join(seq_root,seq)
+        image_path_frame = osp.join(seq_root, seq)
         seq_label_root = osp.join(label_root, seq)
         mkdirs(seq_label_root)
         
         ann_path = os.path.join(from_label_root, seq + "_GT.xml")
-        bboxess, IDss, rotatess, wordss,orignial_bboxess = parse_xml(ann_path,osp.join(image_path_frame,"{}.jpg".format(1)))
+        bboxess, IDss, rotatess, wordss,orignial_bboxess = parse_xml(ann_path, osp.join(image_path_frame, "{}.jpg".format(1)))
         
         ID_list = {}
         
         for i in range(len(IDss)):
             frame_id = i + 1
             label_fpath = osp.join(seq_label_root, '{}.txt'.format(frame_id))
-            frame_path_one = osp.join(image_path_frame,"{}.jpg".format(frame_id))
+            frame_path_one = osp.join(image_path_frame, "{}.jpg".format(frame_id))
             try:
                 img = cv2.imread(frame_path_one)
                 seq_height, seq_width = img.shape[:2]

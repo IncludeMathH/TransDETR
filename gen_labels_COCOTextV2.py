@@ -156,9 +156,9 @@ def gen_data_path(path,split_train_test="train",data_path_str = "./datasets/data
     write_lines(data_path_str, lines)  
     
 
-from_label_root = "/share/wuweijia/Data/COCOTextV2"
-seq_root = '/share/wuweijia/Data/VideoText/MOTR/COCOTextV2/images/train'
-label_root = '/share/wuweijia/Data/VideoText/MOTR/COCOTextV2/labels_with_ids/train'
+from_label_root = "./Data/COCOTextV2"
+seq_root = 'Data/COCOTextV2/images/train'
+label_root = 'Data/COCOTextV2/labels_with_ids/train'
 mkdirs(label_root)
 seqs = [s for s in os.listdir(seq_root)]
 

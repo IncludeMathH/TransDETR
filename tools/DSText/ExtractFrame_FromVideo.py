@@ -1,9 +1,19 @@
 #coding: utf-8
-import os
-import cv2
-import random
+import os, cv2, random, argparse
 from moviepy.editor import *
 import numpy as np
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='extract frame from video dataset')
+
+    parser.add_argument("--video_root", type=str, help='The dir of video data', 
+                        default="./Data/DSText")
+    parser.add_argument("--output_frame_root", type=str, help='The dir of output frames',
+                        default="./Data/DSText/images/")
+    
+    args = parser.parse_args()
+    return args
+
 
 def get_file_path_list(json_dir, postfix = [".jpg"] ):
     '''  '''
@@ -68,13 +78,13 @@ def batch_extractFrame_fromVideo(VideoSet_dir="",to_video=""):
         extract_frame_from_video(Video_dir, NewVideoFrame_dir)
 
                 
-        
-if __name__ == "__main__":
-    print ("Hello World!")
+def main():
+    args = parse_args()
     VideoSetDir_list = []                # 记录视频目录
     
-    video_root = "/data1/dn/TransDETR/Data/ICDAR2015"                        # "./video/"
-    output_frame_root = "/data1/dn/TransDETR/Data/ICDAR2015/images/track/train/"    # "./frame/"
+    video_root = args.video_root
+    output_frame_root = args.output_frame_root
+    
     for i in os.listdir(video_root):
         if ".ipynb" in i:
             continue
@@ -88,3 +98,5 @@ if __name__ == "__main__":
         print(f'to_video is {to_video}')
         batch_extractFrame_fromVideo(VideoSet_dir, to_video)
 
+if __name__ == "__main__":
+    main()

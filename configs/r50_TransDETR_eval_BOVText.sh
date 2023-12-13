@@ -5,10 +5,10 @@
 # Copyright (c) 2020 SenseTime. All Rights Reserved.
 # ------------------------------------------------------------------------
 
-EXP_DIR=exps/e2e_TransVTS_r50_BOVText
+EXP_DIR=exps/model_weights/eval_DSText
 # EXP_DIR=exps/e2e_TransVTS_r50_SynthText
 # EXP_DIR=exps/e2e_TransVTS_r50_COCOTextV2
-CUDA_VISIBLE_DEVICES=0 python3 parallel_eval_icdar15.py \
+CUDA_VISIBLE_DEVICES=0,1,2,3 python3 parallel_eval_icdar15.py \
     --thread_num 1\
     --meta_arch TransDETR_ignored \
     --dataset_file VideoText \
@@ -32,10 +32,10 @@ CUDA_VISIBLE_DEVICES=0 python3 parallel_eval_icdar15.py \
     --fp_ratio 0.3 \
     --query_interaction_layer 'QIM' \
     --extra_track_attn \
-    --mot_path /share/wuweijia/Data/VideoText/MOTR\
-    --data_txt_path_train ./datasets/data_path/BOVText.train \
-    --data_txt_path_val ./datasets/data_path/BOVText.train \
-    --resume ${EXP_DIR}/checkpoint.pth
+    --mot_path Data/ \
+    --data_txt_path_train ./datasets/data_path/DSText.train \
+    --data_txt_path_val ./datasets/data_path/DSText.train \
+    --resume ${EXP_DIR}/checkpointQuery200_PreCOCO.pth
 #     \
 #     --show
     

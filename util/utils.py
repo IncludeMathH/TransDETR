@@ -135,7 +135,7 @@ def debug(idx, img_name, imgs, output_root):
 
     cv2.imwrite(os.path.join(output_root , img_name), res)
 
-def show_img(imgs: np.ndarray, color=False):
+def show_img(imgs, color=False):
     if (len(imgs.shape) == 3 and color) or (len(imgs.shape) == 2 and not color):
         imgs = np.expand_dims(imgs, axis=0)
     for img in imgs:
@@ -157,7 +157,7 @@ def draw_bbox(img_path, result, color=(255, 0, 0),thickness=2):
     return img_path
 
 
-def setup_logger(log_file_path: str = None):
+def setup_logger(log_file_path = None):
     import logging
     from colorlog import ColoredFormatter
     logging.basicConfig(filename=log_file_path, format='%(asctime)s %(levelname)-8s %(filename)s: %(message)s',
