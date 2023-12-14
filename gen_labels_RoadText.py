@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import cv2
 import math
 from tqdm import tqdm
+import json
 
 def adjust_box_sort(box):
     start = -1
@@ -234,82 +235,77 @@ def mkdirs(d):
     if not osp.exists(d):
         os.makedirs(d)
 
-def gen_data_path(path,split_train_test="train",data_path_str = "./datasets/data_path/ICDAR15.train"):
+def gen_data_path(path, data_path_str="./datasets/data_path/roadtext3k.train"):
     
-    image_path = os.path.join(path,"images",split_train_test)
+    image_path = os.path.join(path, "images")
     lines = []
     for video_name in os.listdir(image_path):
-        frame_path = os.path.join(image_path,video_name)
-        frame_list = []
+        frame_path = os.path.join(image_path, video_name)
         print(video_name)
-        for frame_path_ in os.listdir(frame_path):
-            if ".jpg" in frame_path_:
-                frame_list.append(frame_path_)
-        for i in range(1,len(frame_list)+1):
-            frame_real_path = "ICDAR2015/images/train/" + video_name + "/{}.jpg".format(i) + "\n"
+        for i in range(1, len(os.listdir(frame_path))+1):
+            frame_real_path = "RoadText3k/images/" + video_name + "/{}.jpg".format(i) + "\n"
             lines.append(frame_real_path)
     write_lines(data_path_str, lines)  
 
 def main(): 
     # path of ground truth of ICDAR2015 video
-    from_label_root = "./Data/ICDAR2015/train"  # "./ICDAR2015_video/train/gt"
+    from_label_root = "./Data/RoadText3k/roadtext-annotation-fixed.json"
+    with open(from_label_root, 'r') as load_f:
+        anno_dict = json.load(load_f)
 
     # path of video frames 
-    seq_root = './Data/ICDAR2015/images/train'
+    video_root = './Data/RoadText3k/images'
 
     # path to generate the annotation
-    label_root = './Data/ICDAR2015/labels/train'
+    label_root = './Data/RoadText3k/labels'
     mkdirs(label_root)
-    seqs = [s for s in os.listdir(seq_root)]
-
 
     tid_curr = 0
-    tid_last = -1
-    for seq in tqdm(seqs):
-        image_path_frame = osp.join(seq_root, seq)
-        seq_label_root = osp.join(label_root, seq)
+    for video_id, video_anno in anno_dict.items():
+        image_path_frame = osp.join(video_root, video_id)
+        seq_label_root = osp.join(label_root, video_id)
         mkdirs(seq_label_root)
-        
-        ann_path = os.path.join(from_label_root, seq + "_GT.xml")
-        bboxess, IDss, rotatess, wordss, orignial_bboxess = parse_xml(ann_path, osp.join(image_path_frame,"{}.jpg".format(1)))
-        
-        ID_list = {}
-        
-        for i in range(len(IDss)):
-            frame_id = i + 1
+
+        ID_list = {}      # 每个视频的track_id都从1开始分配
+        for frame_id, frame_anno in video_anno.items():
+            lines = []
+            # frame_id starts from 1
             label_fpath = osp.join(seq_label_root, '{}.txt'.format(frame_id))
             frame_path_one = osp.join(image_path_frame, "{}.jpg".format(frame_id))
             img = cv2.imread(frame_path_one)
             seq_height, seq_width = img.shape[:2]
-            
-            lines = []
-            if not IDss[i]:
+
+            frame_anno = frame_anno['labels']
+            if not frame_anno:
+                # TODO: there are many mistakes in roadtext anno file, there is some work to add.
                 with open(label_fpath, 'w') as f:
                     pass
                     continue
             
-            for bboxes, IDs, rotates, word, orignial_bboxes in zip(bboxess[i], IDss[i], rotatess[i], wordss[i], orignial_bboxess[i]):
-                track_id = int(IDs)            
-                x, y, w, h = bboxes
-                
+            for object_anno in frame_anno:
+                track_id = object_anno['id']
                 if track_id not in ID_list:
                     tid_curr += 1
                     ID_list[track_id] = tid_curr
                     real_id = tid_curr                  # begin from 1
                 else:
                     real_id = ID_list[track_id]
-                x += w / 2
-                y += h / 2
-                
-                x1, y1, w1, h1 = orignial_bboxes
+
+                x1, x2, y1, y2 = object_anno['box2d']['x1'], object_anno['box2d']['x2'], object_anno['box2d']['y1'], object_anno['box2d']['y2']
+                x, y = (x1 + x2) / 2, (y1 + y2) / 2
+                if object_anno['category'] in {'Illegible', 'Non_English_Legible'}:
+                    word = '###'
+                else:
+                    word = object_anno['ocr']
+
                 label_str = '0 {:d} {:.6f} {:.6f} {:.6f} {:.6f} {:.6f} {:.1f} {:.1f} {:.1f} {:.1f} {}\n'.format(
-                real_id, x / seq_width, y / seq_height, w / seq_width, h / seq_height, rotates, x1, y1, x1 + w1, y1 + h1, word)
+                real_id, x / seq_width, y / seq_height, (x2 - x1) / seq_width, (y2 - y1) / seq_height, rotates, x1, y1, x2, y2, word)
                 lines.append(label_str)
                 
-            write_lines(label_fpath, lines)     
-
+            write_lines(label_fpath, lines)  
+    # ===================================  
     # to generate data_path .txt
-    gen_data_path(path="./Data/ICDAR2015")
+    gen_data_path(path="./Data/RoadText3k")
 
 if __name__ == '__main__':
     main()
