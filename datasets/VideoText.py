@@ -134,7 +134,12 @@ class DetMOTDetection:
                             for x in self.img_files]
             # recognition  CHINESE LOWERCASE
             self.voc, self.char2id, self.id2char = get_vocabulary('LOWERCASE', use_ctc=self.use_ctc)
-            
+        
+        elif "RoadText3k" in data_txt_path:
+            self.label_files = [(x.replace('images/', 'labels/').replace('.png', '.txt').replace('.jpg', '.txt'))
+                            for x in self.img_files]
+            # recognition  CHINESE LOWERCASE
+            self.voc, self.char2id, self.id2char = get_vocabulary('LOWERCASE', use_ctc=self.use_ctc)            
         else:
             self.label_files = [(x.replace('images/train', 'labels_with_ids/train').replace('.png', '.txt').replace('.jpg', '.txt'))
                             for x in self.img_files]
