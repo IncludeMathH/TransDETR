@@ -292,6 +292,8 @@ class DetMOTDetection:
             targets['dataset'] = 'MOT17'
         elif 'ICDAR2015' in img_path:
             targets['dataset'] = 'ICDAR2015'
+        elif 'RoadText3k' in img_path:
+            targets['dataset'] = 'RoadText3k'
         elif 'ICDAR15' in img_path:
             targets['dataset'] = 'ICDAR15_Pre'
         elif 'COCOTextV2' in img_path:
@@ -602,7 +604,8 @@ def build_dataset2transform(args, image_set):
                                'YVT': mot17_train, 
                                'BOVText': BOVText_train, 'SynthText': crowdhuman_train, 'UnrealText': crowdhuman_train, 
                                'COCOTextV2': crowdhuman_train, 'VISD': crowdhuman_train, 'FlowImage': crowdhuman_train,
-                                "ICDAR15_Pre": crowdhuman_train, 'Synthetic_Chinese': synthetic_chinese_train
+                               "ICDAR15_Pre": crowdhuman_train, 'Synthetic_Chinese': synthetic_chinese_train,
+                               'RoadText3k': mot17_train
                               }
     
     dataset2transform_val = {'ICDAR2015': mot17_test,'DSText': mot17_test, 'VideoSynthText':mot17_test, 
@@ -610,7 +613,8 @@ def build_dataset2transform(args, image_set):
                              'FlowTextV2':mot17_test,
                              'BOVText': mot17_test, 'SynthText': mot17_test, 'UnrealText': mot17_test, 
                              'COCOTextV2': mot17_test,'VISD': mot17_test,'FlowImage': mot17_test,
-                             "ICDAR15_Pre": crowdhuman_train}
+                             "ICDAR15_Pre": crowdhuman_train,
+                             "RoadText3k": mot17_test}
     
     if image_set == 'train':
         return dataset2transform_train

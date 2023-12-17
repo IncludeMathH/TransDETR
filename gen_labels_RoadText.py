@@ -235,12 +235,14 @@ def mkdirs(d):
     if not osp.exists(d):
         os.makedirs(d)
 
-def gen_data_path(path, data_path_str="./datasets/data_path/roadtext3k.train"):
-    
-    image_path = os.path.join(path, "images")
+def gen_data_path(path, data_path_str="./datasets/data_path/RoadText3k.train"):
+    """
+    regard labels as the standard
+    """
+    label_path = os.path.join(path, "labels")
     lines = []
-    for video_name in os.listdir(image_path):
-        frame_path = os.path.join(image_path, video_name)
+    for video_name in os.listdir(label_path):
+        frame_path = os.path.join(label_path, video_name)
         print(video_name)
         for i in range(1, len(os.listdir(frame_path))+1):
             frame_real_path = "RoadText3k/images/" + video_name + "/{}.jpg".format(i) + "\n"
@@ -261,7 +263,7 @@ def main():
     mkdirs(label_root)
 
     tid_curr = 0
-    for video_id, video_anno in anno_dict.items():
+    for video_id, video_anno in tqdm(anno_dict.items()):
         image_path_frame = osp.join(video_root, video_id)
         seq_label_root = osp.join(label_root, video_id)
         mkdirs(seq_label_root)
@@ -272,6 +274,10 @@ def main():
             # frame_id starts from 1
             label_fpath = osp.join(seq_label_root, '{}.txt'.format(frame_id))
             frame_path_one = osp.join(image_path_frame, "{}.jpg".format(frame_id))
+            if not os.path.exists(frame_path_one):
+                # if this image doesn't exit
+                continue
+            
             img = cv2.imread(frame_path_one)
             seq_height, seq_width = img.shape[:2]
 
@@ -299,7 +305,7 @@ def main():
                     word = object_anno['ocr']
 
                 label_str = '0 {:d} {:.6f} {:.6f} {:.6f} {:.6f} {:.6f} {:.1f} {:.1f} {:.1f} {:.1f} {}\n'.format(
-                real_id, x / seq_width, y / seq_height, (x2 - x1) / seq_width, (y2 - y1) / seq_height, rotates, x1, y1, x2, y2, word)
+                real_id, x / seq_width, y / seq_height, (x2 - x1) / seq_width, (y2 - y1) / seq_height, 0, x1, y1, x2, y2, word)
                 lines.append(label_str)
                 
             write_lines(label_fpath, lines)  
