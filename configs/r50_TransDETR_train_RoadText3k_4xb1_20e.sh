@@ -7,9 +7,9 @@
 # Modified from Deformable DETR (https://github.com/fundamentalvision/Deformable-DETR)
 # Copyright (c) 2020 SenseTime. All Rights Reserved.
 # ------------------------------------------------------------------------
-PRETRAIN=exps/e2e_TransVTS_r50_COCOTextV2_SynthText/pretrain_COCOText_checkpoint.pth
+PRETRAIN=exps/model_weights/eval_IC15/TextSpottingMOTA60.9IDF172.8.pth
 
-EXP_DIR=exps/e2e_TransVTS_r50_RoadText3k
+EXP_DIR=exps/r50_RoadText3k_4xb1_20e
 
 CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m torch.distributed.launch --nproc_per_node=4 \
     --use_env main.py \
